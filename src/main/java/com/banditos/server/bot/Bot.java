@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.api.methods.send.SendMessage;
+import org.telegram.telegrambots.api.methods.BotApiMethod;
 import org.telegram.telegrambots.api.objects.Message;
 import org.telegram.telegrambots.api.objects.Update;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -22,7 +22,7 @@ public class Bot extends TelegramLongPollingBot {
 
     @Autowired
     public Bot(Environment env) {
-        Bot.telegramToken = env.getProperty("telegram.token");
+        Bot.telegramToken = env.getProperty("token.telegram");
     }
 
     @Override
@@ -39,16 +39,30 @@ public class Bot extends TelegramLongPollingBot {
 
         if (update.hasMessage()) {
             Message message = update.getMessage();
-            BotMessageController.setMessage(message);
+            BotMessageController.saveMessage(message);
             Long chatId = message.getChatId();
-            SendMessage response = BotMessageCreator.createTusovkasMessage(chatId);
 
+            BotApiMethod<Message> response;
+
+            if (update.getMessage().getText().equals("next")) {
+                response = BotMessageCreator.createTusovkasMessage(chatId);
+            }
+            else {
+                response = BotMessageCreator.createVenue(chatId, (long) 1);
+            }
             try {
                 execute(response);
                 logger.info("Sent message to {}", chatId.toString());
             } catch (TelegramApiException e) {
                 logger.error("Failed to send message to {} due to error: {}", chatId, e.getMessage());
             }
+//
+//            try {
+//                execute(response);
+//                logger.info("Sent message to {}", chatId.toString());
+//            } catch (TelegramApiException e) {
+//                logger.error("Failed to send message to {} due to error: {}", chatId, e.getMessage());
+//            }
         }
         logger.info(update.toString());
     }

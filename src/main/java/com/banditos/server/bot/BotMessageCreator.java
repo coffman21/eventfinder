@@ -1,10 +1,14 @@
 package com.banditos.server.bot;
 
+import com.banditos.server.model.Place;
 import com.banditos.server.model.Tusovka;
+import com.banditos.server.orm.PlaceRepository;
 import com.banditos.server.orm.TusovkaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
+import org.telegram.telegrambots.api.methods.send.SendVenue;
+import org.telegram.telegrambots.api.objects.ResponseParameters;
 import org.telegram.telegrambots.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.api.objects.replykeyboard.buttons.KeyboardRow;
 
@@ -16,15 +20,18 @@ public class BotMessageCreator {
 
     private static TusovkaRepository tusovkaRepository;
 
+    private static PlaceRepository placeRepository;
+
     @Autowired
-    public BotMessageCreator(TusovkaRepository tusovkaRepository) {
-        this.tusovkaRepository = tusovkaRepository;
+    public BotMessageCreator(TusovkaRepository tusovkaRepository, PlaceRepository placeRepository) {
+        BotMessageCreator.tusovkaRepository = tusovkaRepository;
+        BotMessageCreator.placeRepository = placeRepository;
     }
 
     public static SendMessage createTusovkasMessage(Long id) {
         Iterable<Tusovka> tusovkas = tusovkaRepository.findAll();
-        SendMessage response = new SendMessage();
-        response.setChatId(id);
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(id);
 
         StringBuilder sb = new StringBuilder();
         for (Tusovka t : tusovkas) {
@@ -32,7 +39,7 @@ public class BotMessageCreator {
             sb.append(t.getPrice() + "\n");
             sb.append(t.getLink() + "\n");
         }
-        response.setText(sb.toString());
+        sendMessage.setText(sb.toString());
 
         ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
         keyboardMarkup.setResizeKeyboard(true);
@@ -45,7 +52,27 @@ public class BotMessageCreator {
         keyboard.add(row);
         keyboardMarkup.setKeyboard(keyboard);
 
-        response.setReplyMarkup(keyboardMarkup);
-        return response;
+        sendMessage.setReplyMarkup(keyboardMarkup);
+        return sendMessage;
+    }
+
+    public static SendVenue createVenue(Long chatId, Long placeId) {
+        Place place = placeRepository.findOne(placeId
+        );
+
+        SendVenue sendVenue = new SendVenue();
+
+        sendVenue.setChatId(chatId);
+        sendVenue.setAddress(place.getAddress());
+        sendVenue.setLatitude(place.getLatitude());
+        sendVenue.setLongitude(place.getLongitude());
+        sendVenue.setTitle(place.getName());
+
+        return sendVenue;
+    }
+
+
+    private static void setKeyboard() {
+
     }
 }

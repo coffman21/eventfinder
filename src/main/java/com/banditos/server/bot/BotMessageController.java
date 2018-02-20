@@ -4,6 +4,7 @@ import com.banditos.server.model.Message;
 import com.banditos.server.orm.MessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.api.methods.BotApiMethod;
 
 import java.time.Instant;
 import java.util.Date;
@@ -12,12 +13,19 @@ import java.util.Date;
 public class BotMessageController {
     private static MessageRepository messageRepository;
 
+    private BotApiMethod<org.telegram.telegrambots.api.objects.Message> botApiMethod;
+
     @Autowired
     public BotMessageController (MessageRepository messageRepository) {
         BotMessageController.messageRepository = messageRepository;
     }
 
-    public static void setMessage(org.telegram.telegrambots.api.objects.Message message) {
+    public void setBotApiMethod(
+            BotApiMethod<org.telegram.telegrambots.api.objects.Message> botApiMethod) {
+        this.botApiMethod = botApiMethod;
+    }
+
+    public static void saveMessage(org.telegram.telegrambots.api.objects.Message message) {
         Long chatId = message.getChatId();
         String messageText = message.getText();
         Date sentTime = Date.from(
