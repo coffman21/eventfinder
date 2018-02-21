@@ -50,13 +50,12 @@ public abstract class AbstractVkParser {
         for (WallPostFull wpf : response.getItems())
         {
             GroupFull gf = lgf.get(i);
-            tusovkas.add(new Tusovka(
-                    Date.from(Instant.ofEpochSecond(wpf.getDate())),
-                    gf.getName(),
-                    wpf.getText(),
-                    "Таганка",
-                    new URL("https://xui.tebe"),
-                    0));
+            tusovkas.add(new Tusovka(Date.from(Instant.ofEpochSecond(wpf.getDate()))
+                    , gf.getName()
+                    , wpf.getText()
+                    , "Таганка"
+                    , new URL("https://vk.com/club123456")
+                    , 0));
             i++;
         }
         tusovkaRepository.save(tusovkas);
