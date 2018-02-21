@@ -13,6 +13,7 @@ import com.vk.api.sdk.objects.wall.WallPostFull;
 import com.vk.api.sdk.objects.wall.responses.GetExtendedResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.data.domain.PageRequest;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -61,7 +62,7 @@ public abstract class AbstractVkParser {
     }
 
     private Date getLastTusovka(String place) {
-        Tusovka tusovka = tusovkaRepository.findByPlaceOrderByDateAsc(place);
-        return tusovka.getDate();
+        List<Tusovka> tusovka = tusovkaRepository.findByPlaceOrderByDateDesc(place, new PageRequest(0,1));
+        return tusovka.get(0).getDate();
     }
 }
