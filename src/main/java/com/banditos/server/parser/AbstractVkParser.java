@@ -36,7 +36,7 @@ public abstract class AbstractVkParser {
         this.vk = new VkApiClient(transportClient);
 
         Integer app_id = Integer.valueOf(env.getProperty("vk.appid"));
-        String token = env.getProperty("vk.token");
+        String token = env.getProperty("token.vk");
         this.actor = new ServiceActor(app_id, token);
 
         this.tusovkaRepository = tusovkaRepository;
@@ -50,12 +50,14 @@ public abstract class AbstractVkParser {
         for (WallPostFull wpf : response.getItems())
         {
             GroupFull gf = lgf.get(i);
-            tusovkas.add(new Tusovka(Date.from(Instant.ofEpochSecond(wpf.getDate()))
-                    , gf.getName()
-                    , wpf.getText()
-                    , "Таганка"
-                    , new URL("https://vk.com/club123456")
-                    , 0));
+            tusovkas.add(new Tusovka(
+                    Date.from(Instant.ofEpochSecond(wpf.getDate())),
+                    gf.getName(),
+                    wpf.getText(),
+                    "Таганка",
+                    new URL("https://xui.tebe"),
+                    0));
+
             i++;
         }
         tusovkaRepository.save(tusovkas);
