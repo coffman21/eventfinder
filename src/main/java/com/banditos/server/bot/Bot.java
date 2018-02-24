@@ -51,13 +51,13 @@ public class Bot extends TelegramLongPollingBot {
                 case "/start":
                     // ???
                     String username = message.getAuthorSignature();
-                    response = BotMessageCreator.createStartMessage(username);
+                    response = BotMessageCreator.createStartMessage(chatId, username);
                     break;
                 case "/help":
-                    response = BotMessageCreator.createHelpMessage();
+                    response = BotMessageCreator.createHelpMessage(chatId);
                     break;
                 case "nearest":
-                    response = BotMessageCreator.nearestTusovka();
+                    response = BotMessageCreator.nearestTusovka(chatId);
                     break;
                 default:
                     //handle

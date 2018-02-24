@@ -32,8 +32,8 @@ public class BotMessageCreator {
 
     public static SendMessage createTusovkasMessage(Long id) {
         Iterable<Tusovka> tusovkas = tusovkaRepository.findAll();
-        SendMessage sendMessage = new SendMessage();
-        sendMessage.setChatId(id);
+        SendMessage response = new SendMessage();
+        response.setChatId(id);
 
         StringBuilder sb = new StringBuilder();
         for (Tusovka t : tusovkas) {
@@ -41,7 +41,7 @@ public class BotMessageCreator {
             sb.append(t.getPrice() + "\n");
             sb.append(t.getLink() + "\n");
         }
-        sendMessage.setText(sb.toString());
+        response.setText(sb.toString());
 
         ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
         keyboardMarkup.setResizeKeyboard(true);
@@ -54,38 +54,46 @@ public class BotMessageCreator {
         keyboard.add(row);
         keyboardMarkup.setKeyboard(keyboard);
 
-        sendMessage.setReplyMarkup(keyboardMarkup);
-        return sendMessage;
+        response.setReplyMarkup(keyboardMarkup);
+        return response;
     }
 
     public static SendVenue createVenue(Long chatId, Long placeId) {
-        Place place = placeRepository.findOne(placeId
-        );
 
-        SendVenue sendVenue = new SendVenue();
+        // here should be enum or something like findOneByName
 
-        sendVenue.setChatId(chatId);
-        sendVenue.setAddress(place.getAddress());
-        sendVenue.setLatitude(place.getLatitude());
-        sendVenue.setLongitude(place.getLongitude());
-        sendVenue.setTitle(place.getName());
+        Place place = placeRepository.findOne(placeId);
 
-        return sendVenue;
+        SendVenue response = new SendVenue();
+
+        response.setChatId(chatId);
+        response.setAddress(place.getAddress());
+        response.setLatitude(place.getLatitude());
+        response.setLongitude(place.getLongitude());
+        response.setTitle(place.getName());
+
+        return response;
     }
 
-    public static SendMessage createStartMessage(String username) {
-        SendMessage sendMessage = new SendMessage();
+    public static SendMessage createStartMessage(Long chatId, String username) {
+        SendMessage response = new SendMessage();
+        response.setChatId(chatId);
+        response.setText("Hi everybody, ima testing /start command here. What is "
+                + username +" ?");
 
 
-
-        return null;
+        return response;
     }
 
-    public static BotApiMethod<Message> createHelpMessage() {
-        return null;
+    public static BotApiMethod<Message> createHelpMessage(Long chatId) {
+        SendMessage response = new SendMessage();
+        response.setChatId(chatId);
+        response.setText("A help message.");
+
+        return response;
     }
 
-    public static BotApiMethod<Message> nearestTusovka() {
+    public static BotApiMethod<Message> nearestTusovka(Long chatId) {
         return null;
     }
 }
