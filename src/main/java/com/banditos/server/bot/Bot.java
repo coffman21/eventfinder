@@ -56,13 +56,6 @@ public class Bot extends TelegramLongPollingBot {
             } catch (TelegramApiException e) {
                 logger.error("Failed to send message to {} due to error: {}", chatId, e.getMessage());
             }
-//
-//            try {
-//                execute(response);
-//                logger.info("Sent message to {}", chatId.toString());
-//            } catch (TelegramApiException e) {
-//                logger.error("Failed to send message to {} due to error: {}", chatId, e.getMessage());
-//            }
         }
         logger.info(update.toString());
     }

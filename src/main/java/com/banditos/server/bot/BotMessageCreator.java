@@ -71,8 +71,4 @@ public class BotMessageCreator {
         return sendVenue;
     }
 
-
-    private static void setKeyboard() {
-
-    }
 }
