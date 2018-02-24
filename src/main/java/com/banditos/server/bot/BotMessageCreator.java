@@ -73,7 +73,11 @@ public class BotMessageCreator {
         return sendVenue;
     }
 
-    public static BotApiMethod<Message> createStartMessage() {
+    public static SendMessage createStartMessage(String username) {
+        SendMessage sendMessage = new SendMessage();
+
+
+
         return null;
     }
 

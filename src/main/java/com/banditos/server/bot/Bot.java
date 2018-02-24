@@ -45,10 +45,13 @@ public class Bot extends TelegramLongPollingBot {
 
             BotApiMethod<Message> response;
 
+
             String[] text = message.getText().split(" ");
             switch (text[0]) {
                 case "/start":
-                    response = BotMessageCreator.createTusovkasMessage(chatId);
+                    // ???
+                    String username = message.getAuthorSignature();
+                    response = BotMessageCreator.createStartMessage(username);
                     break;
                 case "/help":
                     response = BotMessageCreator.createHelpMessage();
