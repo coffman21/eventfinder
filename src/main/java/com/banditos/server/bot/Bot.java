@@ -13,6 +13,8 @@ import org.telegram.telegrambots.exceptions.TelegramApiException;
 
 import java.util.List;
 
+import static com.banditos.server.bot.BotMessageController.saveMessage;
+
 @Component
 public class Bot extends TelegramLongPollingBot {
 
@@ -36,22 +38,34 @@ public class Bot extends TelegramLongPollingBot {
 
     public void onUpdateReceived(Update update) {
         logger.info("update received: " + update.toString());
-
         if (update.hasMessage()) {
             Message message = update.getMessage();
-            BotMessageController.saveMessage(message);
             Long chatId = message.getChatId();
+            saveMessage(message);
 
             BotApiMethod<Message> response;
 
-            if (update.getMessage().getText().equals("next")) {
-                response = BotMessageCreator.createTusovkasMessage(chatId);
+            String[] text = message.getText().split(" ");
+            switch (text[0]) {
+                case "/start":
+                    response = BotMessageCreator.createTusovkasMessage(chatId);
+                    break;
+                case "/help":
+                    response = BotMessageCreator.createHelpMessage();
+                    break;
+                case "nearest":
+                    response = BotMessageCreator.nearestTusovka();
+                    break;
+                default:
+                    //handle
+                    response = null;
+                    break;
             }
-            else {
-                response = BotMessageCreator.createVenue(chatId, (long) 1);
-            }
+
             try {
-                execute(response);
+                if (response != null) {
+                    execute(response);
+                }
                 logger.info("Sent message to {}", chatId.toString());
             } catch (TelegramApiException e) {
                 logger.error("Failed to send message to {} due to error: {}", chatId, e.getMessage());
@@ -59,6 +73,7 @@ public class Bot extends TelegramLongPollingBot {
         }
         logger.info(update.toString());
     }
+
 
     public void onUpdatesReceived(List<Update> updates) {
         logger.info("updates received:");

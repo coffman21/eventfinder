@@ -6,8 +6,10 @@ import com.banditos.server.orm.PlaceRepository;
 import com.banditos.server.orm.TusovkaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.api.methods.BotApiMethod;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.methods.send.SendVenue;
+import org.telegram.telegrambots.api.objects.Message;
 import org.telegram.telegrambots.api.objects.ResponseParameters;
 import org.telegram.telegrambots.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.api.objects.replykeyboard.buttons.KeyboardRow;
@@ -71,4 +73,15 @@ public class BotMessageCreator {
         return sendVenue;
     }
 
+    public static BotApiMethod<Message> createStartMessage() {
+        return null;
+    }
+
+    public static BotApiMethod<Message> createHelpMessage() {
+        return null;
+    }
+
+    public static BotApiMethod<Message> nearestTusovka() {
+        return null;
+    }
 }
