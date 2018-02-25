@@ -1,16 +1,19 @@
 package com.banditos.server.bot;
 
+import com.google.maps.model.LatLng;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.api.methods.BotApiMethod;
+import org.telegram.telegrambots.api.objects.Location;
 import org.telegram.telegrambots.api.objects.Message;
 import org.telegram.telegrambots.api.objects.Update;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 
+import java.awt.print.Pageable;
 import java.util.List;
 
 import static com.banditos.server.bot.BotMessageController.saveMessage;
@@ -38,43 +41,64 @@ public class Bot extends TelegramLongPollingBot {
 
     public void onUpdateReceived(Update update) {
         logger.info("update received: " + update.toString());
-        if (update.hasMessage()) {
-            Message message = update.getMessage();
-            Long chatId = message.getChatId();
-            saveMessage(message);
 
-            BotApiMethod<Message> response;
+        BotApiMethod<Message> response = null;
+        Long chatId = null;
+        if (update.hasInlineQuery() && update.getInlineQuery().hasLocation()) {
+
+            chatId = Long.valueOf(update.getInlineQuery().getFrom().getId());
+            Location location = update.getInlineQuery().getLocation();
+            response = BotMessageCreator.nearestTusovka(chatId, location);
+
+        } else if (update.hasMessage() || update.hasInlineQuery()) {
+
+            // here we are getting inline query which contains location
+            // and handle somehow
+
+
+            Message message = update.getMessage();
+            chatId = message.getChatId();
+            saveMessage(message);
 
 
             String[] text = message.getText().split(" ");
             switch (text[0]) {
                 case "/start":
                     // ???
-                    String username = message.getAuthorSignature();
+                    String username = message.getFrom().getUserName();
                     response = BotMessageCreator.createStartMessage(chatId, username);
                     break;
                 case "/help":
                     response = BotMessageCreator.createHelpMessage(chatId);
                     break;
-                case "nearest":
-                    response = BotMessageCreator.nearestTusovka(chatId);
+                case "Get":
+                    if (text[1].equals("nearest")) {
+                        //response = BotMessageCreator.nearestTusovka(chatId);
+                        //pass
+                    } else if (text[1].equals("sorted")) {
+                        response = BotMessageCreator.createTusovkasMessage(chatId);
+                    }
                     break;
+                case "Send":
+                    if (text[1].equals("location")) {
+                        response = BotMessageCreator.createLocation(chatId);
+                    }
                 default:
-                    //handle
-                    response = null;
-                    break;
-            }
-
-            try {
-                if (response != null) {
-                    execute(response);
-                }
-                logger.info("Sent message to {}", chatId.toString());
-            } catch (TelegramApiException e) {
-                logger.error("Failed to send message to {} due to error: {}", chatId, e.getMessage());
+                    logger.info("Unhandled update: {}", update.toString());
+                    return;
             }
         }
-        logger.info(update.toString());
+        try {
+            if (response != null) {
+                execute(response);
+            }
+            if (chatId != null) {
+                logger.info("Sent message to {}", chatId.toString());
+            }
+        } catch (TelegramApiException e) {
+            logger.error("Failed to send message to {} due to error: {}", chatId, e.getMessage());
+        }
+    logger.info(update.toString());
     }
 
 
