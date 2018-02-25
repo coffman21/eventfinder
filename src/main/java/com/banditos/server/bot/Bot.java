@@ -44,13 +44,16 @@ public class Bot extends TelegramLongPollingBot {
 
         BotApiMethod<Message> response = null;
         Long chatId = null;
+
+        saveMessage(update);
+
         if (update.hasInlineQuery() && update.getInlineQuery().hasLocation()) {
 
             chatId = Long.valueOf(update.getInlineQuery().getFrom().getId());
             Location location = update.getInlineQuery().getLocation();
             response = BotMessageCreator.nearestTusovka(chatId, location);
 
-        } else if (update.hasMessage() || update.hasInlineQuery()) {
+        } else if (update.hasMessage()) {
 
             // here we are getting inline query which contains location
             // and handle somehow
@@ -58,7 +61,7 @@ public class Bot extends TelegramLongPollingBot {
 
             Message message = update.getMessage();
             chatId = message.getChatId();
-            saveMessage(message);
+
 
 
             String[] text = message.getText().split(" ");
@@ -73,6 +76,7 @@ public class Bot extends TelegramLongPollingBot {
                     break;
                 case "Get":
                     if (text[1].equals("nearest")) {
+                        response = BotMessageCreator.createLocation(chatId);
                         //response = BotMessageCreator.nearestTusovka(chatId);
                         //pass
                     } else if (text[1].equals("sorted")) {
@@ -83,6 +87,7 @@ public class Bot extends TelegramLongPollingBot {
                     if (text[1].equals("location")) {
                         response = BotMessageCreator.createLocation(chatId);
                     }
+                    break;
                 default:
                     logger.info("Unhandled update: {}", update.toString());
                     return;

@@ -16,12 +16,28 @@ public class Message {
 
     private Date sendTime;
 
-    // private Object state;
+    private Boolean isInline;
+
+    private Float lat;
+
+    private Float lng;
+
+
+// private Object state;
 
     public Message(Long chatId, String messageText, Date sendTime) {
         this.chatId = chatId;
         this.messageText = messageText;
         this.sendTime = sendTime;
+    }
+
+    public Message(Long chatId, String messageText, Date sendTime, Float lat, Float lng, boolean isInline) {
+        this.chatId = chatId;
+        this.messageText = messageText;
+        this.sendTime = sendTime;
+        this.lat = lat;
+        this.lng = lng;
+        this.isInline = true;
     }
 
     public Long getChatId() {
@@ -46,5 +62,29 @@ public class Message {
 
     public void setSendTime(Date sendTime) {
         this.sendTime = sendTime;
+    }
+
+    public Boolean getInline() {
+        return isInline;
+    }
+
+    public void setInline(Boolean inline) {
+        isInline = inline;
+    }
+
+    public Float getLat() {
+        return lat;
+    }
+
+    public void setLat(Float lat) {
+        this.lat = lat;
+    }
+
+    public Float getLng() {
+        return lng;
+    }
+
+    public void setLng(Float lng) {
+        this.lng = lng;
     }
 }
