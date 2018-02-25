@@ -46,20 +46,31 @@ public abstract class AbstractVkParser {
         GetExtendedResponse response = vk.wall().getExtended(actor).domain(domain).count(5).execute();
         List<Tusovka> tusovkas = new ArrayList<>();
         List<GroupFull> lgf = response.getGroups();
+
+        Long lastInDatabase = getLastTusovka("Powerhouse").getTime();
+
         int i = 0;
         for (WallPostFull wpf : response.getItems())
         {
             GroupFull gf = lgf.get(i);
-            tusovkas.add(new Tusovka(
-                    Date.from(Instant.ofEpochSecond(wpf.getDate())),
-                    gf.getName(),
-                    wpf.getText(),
-                    "Таганка",
-                    new URL("https://xui.tebe"),
-                    0));
+            if (wpf.getDate().compareTo(Math.toIntExact(lastInDatabase / 1000L)) > 0) {
+                tusovkas.add(new Tusovka(
+                        Date.from(Instant.ofEpochSecond(wpf.getDate())),
+                        gf.getName(),
+                        wpf.getText(),
+                        "Таганка",
 
+                        // https://vk.com/pwrhs?w=wall-62811864_3703
+                        new URL("https://vk.com/"
+                                + domain
+                                + "?w=wall"
+                                + wpf.getOwnerId()
+                                + "_" + wpf.getId()),
+                        0));
+            }
             i++;
         }
+
         tusovkaRepository.save(tusovkas);
     }
 
