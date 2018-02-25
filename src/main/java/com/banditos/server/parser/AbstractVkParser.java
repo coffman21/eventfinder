@@ -58,7 +58,7 @@ public abstract class AbstractVkParser {
                         Date.from(Instant.ofEpochSecond(wpf.getDate())),
                         gf.getName(),
                         wpf.getText(),
-                        "Таганка",
+                        "Powerhouse",
 
                         // https://vk.com/pwrhs?w=wall-62811864_3703
                         new URL("https://vk.com/"
