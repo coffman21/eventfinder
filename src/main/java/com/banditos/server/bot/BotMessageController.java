@@ -25,20 +25,27 @@ public class BotMessageController {
         if (update.hasMessage()) {
             Message msg = update.getMessage();
 
-            Long chatId = msg.getChatId();
+            Long chatId        = msg.getChatId();
             String messageText = msg.getText();
-            Date sentTime = Date.from(Instant.ofEpochSecond(msg.getDate()));
-
-            message = new com.banditos.server.model.Message(chatId, messageText, sentTime);
+            Date sentTime      = Date.from(Instant.ofEpochSecond(msg.getDate()));
+            if (msg.hasLocation()) {
+                Float lat      = msg.getLocation().getLatitude();
+                Float lng      = msg.getLocation().getLongitude();
+                message = new com.banditos.server.model.Message(
+                        chatId, messageText, sentTime, lat, lng, false);
+            }
+            else {
+                message = new com.banditos.server.model.Message(chatId, messageText, sentTime);
+            }
 
         } else if (update.hasInlineQuery()) {
             InlineQuery inlineQuery = update.getInlineQuery();
 
-            Long chatId             = Long.valueOf(inlineQuery.getFrom().getId());
+            Long chatId             = Long.valueOf(inlineQuery.getId());
             String messageText      = inlineQuery.getQuery();
             Date sentTime           = Date.from(Instant.now());
-            Float lat               = inlineQuery.getLocation().getLatitude();
-            Float lng               = inlineQuery.getLocation().getLongitude();
+            Float lat               = inlineQuery.hasLocation() ? inlineQuery.getLocation().getLatitude() : null;
+            Float lng               = inlineQuery.hasLocation() ? inlineQuery.getLocation().getLongitude() : null;
             message = new com.banditos.server.model.Message(
                     chatId, messageText, sentTime, lat, lng, true);
         }
