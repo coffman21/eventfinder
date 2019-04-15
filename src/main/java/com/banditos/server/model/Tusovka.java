@@ -18,7 +18,9 @@ public class Tusovka {
     @Column(length = 2000)
     private String description;
 
-    private String place;
+    @ManyToOne
+    @JoinColumn(name = "place_id")
+    private Place place;
 
     private URL link;
 
@@ -26,7 +28,7 @@ public class Tusovka {
 
     protected Tusovka() {}
 
-    public Tusovka(Date date, String name, String description, String place, URL link, int price) {
+    public Tusovka(Date date, String name, String description, Place place, URL link, int price) {
         this.date = date;
         this.name = name;
         this.description = description;
@@ -67,13 +69,11 @@ public class Tusovka {
         this.description = description;
     }
 
-    @ManyToOne
-    @JoinColumn(name = "place_id")
-    public String getPlace() {
+    public Place getPlace() {
         return place;
     }
 
-    public void setPlace(String place) {
+    public void setPlace(Place place) {
         this.place = place;
     }
 
@@ -95,8 +95,14 @@ public class Tusovka {
 
     @Override
     public String toString() {
-        return  " name: " + name +
-                " date: " + date +
-                " place:  " + place;
+        return "Tusovka{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", date=" + date +
+                ", description='" + description + '\'' +
+                ", place=" + place +
+                ", link=" + link +
+                ", price=" + price +
+                '}';
     }
 }

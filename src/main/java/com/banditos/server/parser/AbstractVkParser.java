@@ -1,5 +1,6 @@
 package com.banditos.server.parser;
 
+import com.banditos.server.model.Place;
 import com.banditos.server.model.Tusovka;
 import com.banditos.server.orm.TusovkaRepository;
 import com.vk.api.sdk.client.TransportClient;
@@ -54,7 +55,7 @@ public abstract class AbstractVkParser {
                     Date.from(Instant.ofEpochSecond(wpf.getDate())),
                     gf.getName(),
                     wpf.getText(),
-                    "Таганка",
+                    new Place(),
                     new URL("https://xui.tebe"),
                     0));
             i++;

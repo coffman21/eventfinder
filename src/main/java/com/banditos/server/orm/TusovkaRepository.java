@@ -10,4 +10,7 @@ import java.util.List;
 public interface TusovkaRepository extends CrudRepository<Tusovka, Long> {
 
     List<Tusovka> findByPlaceOrderByDateDesc(String place, Pageable pageable);
+
+    List<Tusovka> findAllByDateGreaterThanEqual(Date date, Pageable pageable);
+
 }

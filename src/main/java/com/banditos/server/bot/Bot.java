@@ -16,13 +16,15 @@ import java.util.List;
 @Component
 public class Bot extends TelegramLongPollingBot {
 
-    private static String telegramToken;
-
     private static final Logger logger = LoggerFactory.getLogger(Bot.class);
 
+    private String telegramToken;
+    private BotMessageCreator botMessageCreator;
+
     @Autowired
-    public Bot(Environment env) {
-        Bot.telegramToken = env.getProperty("telegram.token");
+    public Bot(Environment env, BotMessageCreator botMessageCreator) {
+        this.telegramToken = env.getProperty("token.telegram");
+        this.botMessageCreator = botMessageCreator;
     }
 
     @Override
@@ -41,7 +43,7 @@ public class Bot extends TelegramLongPollingBot {
             Message message = update.getMessage();
             BotMessageController.setMessage(message);
             Long chatId = message.getChatId();
-            SendMessage response = BotMessageCreator.createTusovkasMessage(chatId);
+            SendMessage response = botMessageCreator.createTusovkasMessage(chatId);
 
             try {
                 execute(response);
@@ -58,7 +60,6 @@ public class Bot extends TelegramLongPollingBot {
         for (Update update : updates) {
             onUpdateReceived(update);
         }
-
     }
 
     public String getBotUsername() {
