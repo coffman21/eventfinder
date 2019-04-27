@@ -5,35 +5,35 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.api.methods.send.SendMessage;
-import org.telegram.telegrambots.api.objects.Message;
-import org.telegram.telegrambots.api.objects.Update;
+import org.telegram.abilitybots.api.bot.AbilityBot;
+import org.telegram.telegrambots.bots.DefaultBotOptions;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import org.telegram.telegrambots.exceptions.TelegramApiException;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.List;
 
 @Component
-public class Bot extends TelegramLongPollingBot {
+public class Bot extends AbilityBot {
 
     private static final Logger logger = LoggerFactory.getLogger(Bot.class);
 
-    private String telegramToken;
     private BotMessageCreator botMessageCreator;
 
-    @Autowired
-    public Bot(Environment env, BotMessageCreator botMessageCreator) {
-        this.telegramToken = env.getProperty("token.telegram");
+    public Bot(Environment env, BotMessageCreator botMessageCreator, DefaultBotOptions botOptions) {
+        super(env.getProperty("telegram.token"), env.getProperty("telegram.botname"), botOptions);
         this.botMessageCreator = botMessageCreator;
-    }
-
-    @Override
-    public String getBotToken() {
-            return telegramToken;
     }
 
     public void onClosing() {
         logger.info("closing");
+    }
+
+    @Override
+    public int creatorId() {
+        return 0;
     }
 
     public void onUpdateReceived(Update update) {

@@ -37,7 +37,7 @@ public abstract class AbstractVkParser {
         this.vk = new VkApiClient(transportClient);
 
         Integer app_id = Integer.valueOf(env.getProperty("vk.appid"));
-        String token = env.getProperty("token.vk");
+        String token = env.getProperty("vk.token");
         this.actor = new ServiceActor(app_id, token);
 
         this.tusovkaRepository = tusovkaRepository;

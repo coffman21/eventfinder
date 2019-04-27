@@ -22,7 +22,7 @@ public class BotMessageController {
         BotMessageController.messageRepository = messageRepository;
     }
 
-    public static void setMessage(org.telegram.telegrambots.api.objects.Message message) {
+    public static void setMessage(org.telegram.telegrambots.meta.api.objects.Message message) {
         Long chatId = message.getChatId();
         String messageText = message.getText();
         Date sentTime = Date.from(

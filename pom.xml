@@ -51,11 +51,21 @@
 			<artifactId>sdk</artifactId>
 			<version>0.5.11</version>
 		</dependency>
-        <dependency>
-            <groupId>com.github.xabgesagtx</groupId>
-            <artifactId>telegram-spring-boot-starter</artifactId>
-            <version>0.13</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.github.xabgesagtx</groupId>-->
+            <!--<artifactId>telegram-spring-boot-starter</artifactId>-->
+            <!--<version>0.13</version>-->
+        <!--</dependency>-->
+			<!--<dependency>-->
+				<!--<groupId>org.telegram</groupId>-->
+				<!--<artifactId>telegrambots</artifactId>-->
+				<!--<version>4.1.2</version>-->
+			<!--</dependency>-->
+			<dependency>
+				<groupId>org.telegram</groupId>
+				<artifactId>telegrambots-abilities</artifactId>
+				<version>4.2</version>
+			</dependency>
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
