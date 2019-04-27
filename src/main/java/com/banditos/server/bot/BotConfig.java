@@ -3,6 +3,7 @@ package com.banditos.server.bot;
 import com.banditos.server.orm.TusovkaRepository;
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
+import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +19,17 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 @Configuration
 public class BotConfig {
 
-    static {
-        ApiContextInitializer.init();
-    }
-
     private static final Logger LOGGER = LoggerFactory
             .getLogger(BotConfig.class);
+
+    /**
+     * Initializing ApiContextInitializer.
+     * Used for creating BotSession, which used when Bot inits.
+     */
+    @PostConstruct
+    public void init() {
+        ApiContextInitializer.init();
+    }
 
     @Bean
     @Autowired
@@ -60,15 +66,17 @@ public class BotConfig {
         return new BotMessageCreator(tusovkaRepository);
     }
 
+    /**
+     * Set up Http proxy
+     * @param env for properties
+     * @return bot options for Bot constructor
+     */
     @Bean
     public DefaultBotOptions defaultBotOptions(Environment env) {
-        // Set up Http proxy
         DefaultBotOptions botOptions = ApiContext
                 .getInstance(DefaultBotOptions.class);
-
         botOptions.setProxyHost(env.getProperty("telegram.proxy.host"));
         botOptions.setProxyPort(env.getProperty("telegram.proxy.port", Integer.class));
-        // Select proxy type: [HTTP|SOCKS4|SOCKS5] (default: NO_PROXY)
         botOptions.setProxyType(DefaultBotOptions.ProxyType.SOCKS5);
         return botOptions;
     }
