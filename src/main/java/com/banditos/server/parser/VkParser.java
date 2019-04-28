@@ -2,6 +2,7 @@ package com.banditos.server.parser;
 
 import com.banditos.server.model.Tusovka;
 import com.banditos.server.orm.MessageRepository;
+import com.banditos.server.orm.PlaceRepository;
 import com.banditos.server.orm.TusovkaRepository;
 import com.vk.api.sdk.client.TransportClient;
 import com.vk.api.sdk.client.VkApiClient;
@@ -28,8 +29,8 @@ public class VkParser extends AbstractVkParser {
 
      //Parse only powerhouse for now
 
-    VkParser(Environment env, TusovkaRepository tusovkaRepository) {
-        super(env, tusovkaRepository);
+    VkParser(Environment env, TusovkaRepository tusovkaRepository, PlaceRepository placeRepository) {
+        super(env, tusovkaRepository, placeRepository);
     }
 
     @PostConstruct

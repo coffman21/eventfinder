@@ -2,6 +2,7 @@ package com.banditos.server.parser;
 
 import com.banditos.server.model.Place;
 import com.banditos.server.model.Tusovka;
+import com.banditos.server.orm.PlaceRepository;
 import com.banditos.server.orm.TusovkaRepository;
 import com.vk.api.sdk.client.TransportClient;
 import com.vk.api.sdk.client.VkApiClient;
@@ -29,9 +30,9 @@ public abstract class AbstractVkParser {
     String domain;
 
     private final TusovkaRepository tusovkaRepository;
-
+    private final PlaceRepository placeRepository;
     @Autowired
-    AbstractVkParser(Environment env, TusovkaRepository tusovkaRepository)
+    AbstractVkParser(Environment env, TusovkaRepository tusovkaRepository, PlaceRepository placeRepository)
     {
         TransportClient transportClient = new HttpTransportClient();
         this.vk = new VkApiClient(transportClient);
@@ -41,9 +42,10 @@ public abstract class AbstractVkParser {
         this.actor = new ServiceActor(app_id, token);
 
         this.tusovkaRepository = tusovkaRepository;
+        this.placeRepository = placeRepository;
     }
 
-    public void getTusovkas() throws ApiException, ClientException, MalformedURLException {
+    public List<Tusovka> getTusovkas() throws ApiException, ClientException, MalformedURLException {
         GetExtendedResponse response = vk.wall().getExtended(actor).domain(domain).count(5).execute();
         List<Tusovka> tusovkas = new ArrayList<>();
         List<GroupFull> lgf = response.getGroups();
@@ -51,16 +53,19 @@ public abstract class AbstractVkParser {
         for (WallPostFull wpf : response.getItems())
         {
             GroupFull gf = lgf.get(i);
+            Place place = new Place();
+            placeRepository.save(place);
             tusovkas.add(new Tusovka(
                     Date.from(Instant.ofEpochSecond(wpf.getDate())),
                     gf.getName(),
                     wpf.getText(),
-                    new Place(),
+                    place,
                     new URL("https://xui.tebe"),
                     0));
             i++;
         }
         tusovkaRepository.save(tusovkas);
+        return tusovkas;
     }
 
     private Date getLastTusovka(String place) {

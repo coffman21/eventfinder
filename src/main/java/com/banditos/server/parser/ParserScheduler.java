@@ -24,7 +24,7 @@ public class ParserScheduler {
     //@Scheduled(cron = "* 20 16 ? * *")
     @Scheduled(cron = "*/5 * * ? * *")
     public void runParsers() throws ClientException, ApiException, MalformedURLException {
-        logger.info("Scheduled task started");
-
+        logger.trace("Scheduled task started");
+//        vkParser.getTusovkas();
     }
 }
