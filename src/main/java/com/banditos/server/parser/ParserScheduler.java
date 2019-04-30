@@ -1,7 +1,6 @@
 package com.banditos.server.parser;
 
-import com.banditos.server.bot.geolocation.GoogleMapsApi;
-import com.google.maps.model.LatLng;
+import com.banditos.server.parser.vk.VkParser;
 import com.vk.api.sdk.exceptions.ApiException;
 import com.vk.api.sdk.exceptions.ClientException;
 import org.slf4j.Logger;
@@ -10,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.net.MalformedURLException;
 
 @Component

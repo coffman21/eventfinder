@@ -1,4 +1,4 @@
-package com.banditos.server.parser;
+package com.banditos.server.parser.vk;
 
 import com.banditos.server.model.Place;
 import com.banditos.server.model.Tusovka;

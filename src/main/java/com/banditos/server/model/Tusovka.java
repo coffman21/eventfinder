@@ -24,11 +24,11 @@ public class Tusovka {
 
     private URL link;
 
-    private int price;
+    private Integer price;
 
     protected Tusovka() {}
 
-    public Tusovka(Date date, String name, String description, Place place, URL link, int price) {
+    public Tusovka(Date date, String name, String description, Place place, URL link, Integer price) {
         this.date = date;
         this.name = name;
         this.description = description;
