@@ -13,6 +13,7 @@ import com.vk.api.sdk.httpclient.HttpTransportClient;
 import com.vk.api.sdk.objects.groups.GroupFull;
 import com.vk.api.sdk.objects.wall.WallPostFull;
 import com.vk.api.sdk.objects.wall.responses.GetExtendedResponse;
+import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.data.domain.PageRequest;
@@ -56,7 +57,7 @@ public abstract class AbstractVkParser {
             Place place = new Place();
             placeRepository.save(place);
             tusovkas.add(new Tusovka(
-                    Date.from(Instant.ofEpochSecond(wpf.getDate())),
+                    LocalDateTime.from(Instant.ofEpochSecond(wpf.getDate())),
                     gf.getName(),
                     wpf.getText(),
                     place,
@@ -68,7 +69,7 @@ public abstract class AbstractVkParser {
         return tusovkas;
     }
 
-    private Date getLastTusovka(String place) {
+    private LocalDateTime getLastTusovka(String place) {
         List<Tusovka> tusovka = tusovkaRepository.findByPlaceOrderByDateDesc(place, new PageRequest(0, 1));
         return tusovka.get(0).getDate();
     }

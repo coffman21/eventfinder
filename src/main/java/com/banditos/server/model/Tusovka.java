@@ -1,5 +1,6 @@
 package com.banditos.server.model;
 
+import java.time.LocalDateTime;
 import javax.persistence.*;
 import java.net.URL;
 import java.util.Date;
@@ -13,7 +14,7 @@ public class Tusovka {
 
     private String name;
 
-    private Date date;
+    private LocalDateTime date;
 
     @Column(length = 2000)
     private String description;
@@ -28,7 +29,7 @@ public class Tusovka {
 
     protected Tusovka() {}
 
-    public Tusovka(Date date, String name, String description, Place place, URL link, Integer price) {
+    public Tusovka(LocalDateTime date, String name, String description, Place place, URL link, Integer price) {
         this.date = date;
         this.name = name;
         this.description = description;
@@ -53,11 +54,11 @@ public class Tusovka {
         this.name = name;
     }
 
-    public Date getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 
