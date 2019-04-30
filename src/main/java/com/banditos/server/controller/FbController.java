@@ -1,23 +1,29 @@
 package com.banditos.server.controller;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.support.ui.ExpectedCondition;
-import org.openqa.selenium.support.ui.WebDriverWait;
+import com.banditos.server.model.Tusovka;
+import com.banditos.server.parser.facebook.FacebookParser;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequestMapping(path = "/fb")
 public class FbController {
 
-    @GetMapping
-    @RequestMapping(path = "/get")
-    public String getPage() {
+    private final FacebookParser facebookParser;
 
-        return "aaa";
+    @Autowired
+    public FbController(
+            FacebookParser facebookParser) {
+        this.facebookParser = facebookParser;
+        facebookParser.setDomain("powerhousemoscow");
+    }
+
+    @GetMapping(path = "/get")
+    public @ResponseBody List<Tusovka> getPage() {
+        return facebookParser.parseTusovkas();
     }
 }

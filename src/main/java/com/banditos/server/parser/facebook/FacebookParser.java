@@ -1,11 +1,11 @@
 package com.banditos.server.parser.facebook;
 
+import com.banditos.server.model.Place;
 import com.banditos.server.model.Tusovka;
 import com.banditos.server.parser.Parser;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.openqa.selenium.By;
@@ -22,10 +22,10 @@ import org.springframework.stereotype.Component;
 
 // todo scope
 @Component
-public abstract class AbstractFacebookParser implements Parser, DisposableBean {
+public class FacebookParser implements Parser, DisposableBean {
 
     private static final Logger LOGGER = LoggerFactory
-            .getLogger(AbstractFacebookParser.class);
+            .getLogger(FacebookParser.class);
     private static final String FB_PAGE_LINK = "https://mobile.facebook.com/";
     private static final String XPATH_FOR_VIEW_EVENTS_BUTTON = "(//a[contains(text(),'View Event Details')])";
     private static final String XPATH_FOR_EVENT_TITLE = "//h3";
@@ -39,9 +39,10 @@ public abstract class AbstractFacebookParser implements Parser, DisposableBean {
     private final Environment env;
 
     private String domain;
+    private boolean isLoggedIn = false;
 
     @Autowired
-    public AbstractFacebookParser(Environment env) {
+    public FacebookParser(Environment env) {
         this.env = env;
         this.driver = new HtmlUnitDriver(true);
     }
@@ -51,13 +52,23 @@ public abstract class AbstractFacebookParser implements Parser, DisposableBean {
         driver.quit();
     }
 
-    private List<Tusovka> parseEvents() {
+    @Override
+    public List<Tusovka> parseTusovkas() {
+        if (domain == null) throw new IllegalStateException("domain field not set");
+
         List<Tusovka> tusovkas = new ArrayList<>();
 
-        login();
+        if (!isLoggedIn) {
+            // todo cookie expiration
+            login();
+        }
 
         String fbGroupUrl = FB_PAGE_LINK + domain + "/events";
         driver.get(fbGroupUrl);
+        if (LOGGER.isTraceEnabled()) {
+            LOGGER.trace("Opening url: {} Got page: {}", fbGroupUrl, driver.getPageSource());
+        }
+
         List<String> eventHrefs = driver.findElements(By.xpath(
                 XPATH_FOR_VIEW_EVENTS_BUTTON))
                 .stream()
@@ -114,9 +125,20 @@ public abstract class AbstractFacebookParser implements Parser, DisposableBean {
         } catch (NoSuchElementException e) {
             // do nothing
         }
-        LOGGER.trace("Trying to log in, got: {}", driver
-                .findElement(By.xpath("/"))
-                .getText());
+        if (LOGGER.isTraceEnabled()) {
+            LOGGER.trace("Trying to log in, got: {}", driver
+                    .getPageSource());
+        }
+        isLoggedIn = true;
     }
 
+    @Override
+    public void setDomain(String domain) {
+        this.domain = domain;
+    }
+
+    @Override
+    public Place getPlace() {
+        return null;
+    }
 }

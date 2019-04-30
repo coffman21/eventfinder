@@ -1,6 +1,7 @@
 package com.banditos.server.model;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 import javax.persistence.*;
 import java.net.URL;
 import java.util.Date;
@@ -86,12 +87,35 @@ public class Tusovka {
         this.link = link;
     }
 
-    public int getPrice() {
+    public Integer getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(Integer price) {
         this.price = price;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Tusovka tusovka = (Tusovka) o;
+        return Objects.equals(id, tusovka.id) &&
+                Objects.equals(name, tusovka.name) &&
+                Objects.equals(date, tusovka.date) &&
+                Objects.equals(description, tusovka.description) &&
+                Objects.equals(place, tusovka.place) &&
+                Objects.equals(link, tusovka.link) &&
+                Objects.equals(price, tusovka.price);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, date, description, place, link, price);
     }
 
     @Override
