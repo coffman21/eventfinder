@@ -62,6 +62,13 @@ public class FacebookParserUtilsTest {
     }
 
     @Test
+    public void testDateWithDateParse() {
+        LocalDateTime date = FacebookParserUtils.parseDate(DATE_STRING_WITH_DATE);
+        LocalDateTime expected = LocalDateTime.of(2019, 5, 10, 22, 0, 0);
+        assertEquals(expected, date);
+    }
+
+    @Test
     public void testDateTimeFormatter() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, MMMM d, yyyy");
         String datePart = DATE_STRING_WITH_DATE.split(" at ")[0];
