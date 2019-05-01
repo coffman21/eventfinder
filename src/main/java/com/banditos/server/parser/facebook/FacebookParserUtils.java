@@ -9,7 +9,7 @@ import java.time.temporal.ChronoUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FacebookParserUtils {
+class FacebookParserUtils {
 
     private static final Logger LOGGER = LoggerFactory
             .getLogger(FacebookParserUtils.class);
@@ -23,7 +23,7 @@ public class FacebookParserUtils {
     private static final String END_TIME_SEPARATOR = " – ";
     private static final String PM = "PM";
 
-    static LocalDateTime parseDate(String eventDateString) {
+    static LocalDateTime parseBeginDate(String eventDateString) {
 //        eventDateString = eventDateString.toUpperCase();
         LocalDateTime date;
 
@@ -95,6 +95,10 @@ public class FacebookParserUtils {
                     eventDateString);
         }
         return null;
+    }
+
+    static LocalDateTime parseEndDate() {
+        throw new UnsupportedOperationException("not implemented");
     }
 
     private static int amountOfHours(String timeStr) {
