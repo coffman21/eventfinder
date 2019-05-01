@@ -17,6 +17,8 @@ public class Tusovka {
 
     private LocalDateTime date;
 
+    private String dateStr;
+
     @Column(length = 2000)
     private String description;
 
@@ -63,6 +65,14 @@ public class Tusovka {
         this.date = date;
     }
 
+    public String getDateStr() {
+        return dateStr;
+    }
+
+    public void setDateStr(String dateStr) {
+        this.dateStr = dateStr;
+    }
+
     public String getDescription() {
         return description;
     }
@@ -107,6 +117,7 @@ public class Tusovka {
         return Objects.equals(id, tusovka.id) &&
                 Objects.equals(name, tusovka.name) &&
                 Objects.equals(date, tusovka.date) &&
+                Objects.equals(dateStr, tusovka.dateStr) &&
                 Objects.equals(description, tusovka.description) &&
                 Objects.equals(place, tusovka.place) &&
                 Objects.equals(link, tusovka.link) &&
@@ -115,7 +126,8 @@ public class Tusovka {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, date, description, place, link, price);
+        return Objects
+                .hash(id, name, date, dateStr, description, place, link, price);
     }
 
     @Override
@@ -124,6 +136,7 @@ public class Tusovka {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", date=" + date +
+                ", dateStr='" + dateStr + '\'' +
                 ", description='" + description + '\'' +
                 ", place=" + place +
                 ", link=" + link +
