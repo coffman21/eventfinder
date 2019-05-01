@@ -1,5 +1,6 @@
 package com.banditos.server.parser;
 
+import com.banditos.server.parser.facebook.FacebookParser;
 import com.banditos.server.parser.vk.VkParser;
 import com.vk.api.sdk.exceptions.ApiException;
 import com.vk.api.sdk.exceptions.ClientException;
@@ -14,15 +15,24 @@ import java.net.MalformedURLException;
 @Component
 public class ParserScheduler {
 
-    @Autowired
-    private VkParser vkParser;
+    private static final Logger LOGGER = LoggerFactory.getLogger(ParserScheduler.class);
 
-    private Logger logger = LoggerFactory.getLogger(ParserScheduler.class);
+    private VkParser vkParser;
+    private FacebookParser facebookParser;
+
+    @Autowired
+    public ParserScheduler(VkParser vkParser,
+            FacebookParser facebookParser) {
+        this.vkParser = vkParser;
+        this.facebookParser = facebookParser;
+    }
+
 
     //@Scheduled(cron = "* 20 16 ? * *")
     @Scheduled(cron = "*/5 * * ? * *")
-    public void runParsers() throws ClientException, ApiException, MalformedURLException {
-        logger.trace("Scheduled task started");
+    public void runParsers()
+            throws ClientException, ApiException, MalformedURLException {
+        LOGGER.trace("Scheduled task started");
 //        vkParser.getTusovkas();
     }
 }
