@@ -4,26 +4,23 @@ import static org.junit.Assert.assertEquals;
 
 import com.banditos.server.model.pojo.EventDate;
 import java.time.DayOfWeek;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class FacebookParserUtilsTest {
 
     private static final String DATE_STRING_TODAY = "Today at 8 PM – 11 PM";
+    private static final String DATE_STRING_WITH_TWO_AT = "May 10 at 10:59 PM – May 11 at 12 PM";
+    // started yesterday
     private static final String DATE_STRING_TODAY_OVER_MIDNIGHT = "Today at 11 PM – 5 AM";
     private static final String DATE_STRING_TOMORROW = "Tomorrow at 8 PM – 11 PM";
     private static final String DATE_STRING_THURSDAY = "Thursday at 8 PM – 11 PM";
     private static final String DATE_STRING_WITH_DATE = "Friday, May 10, 2019 at 10 PM – 5 AM";
-    private static final String DATE_STRING_WITH_TWO_AT = "May 10 at 10:59 PM – May 11 at 12 PM";
-    // started yesterday at 00:05
-    // Tuesday at 11 PM – 5 AM
 
     @Test
     public void testTodayDateParse() {

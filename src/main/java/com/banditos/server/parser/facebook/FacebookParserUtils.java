@@ -90,7 +90,6 @@ class FacebookParserUtils {
                         .minus(1, ChronoUnit.DAYS)
                         .with(getTime(timePart));
             }
-            // todo: events that ends at the next day after midday will lead to wrong results
 
         } else if (datePart.equals(TOMORROW)) {
             // Tomorrow at 8 PM – 11 PM
