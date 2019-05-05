@@ -101,8 +101,13 @@ public class FacebookParser implements Parser, DisposableBean {
                 LOGGER.error("Event URL: {} is malformed", eventUrl);
                 url = null;
             }
-            Tusovka t = new Tusovka(FacebookParserUtils.parseBeginDate(eventDate), eventTitle,
-                    eventDescr, getPlace(), url, null);
+            Tusovka t = new Tusovka()
+                    .setName(eventTitle)
+                    .setDateStr(eventDate)
+                    .setDate(FacebookParserUtils.parseEventDate(eventDate))
+                    .setDescription(eventDescr)
+                    .setPlace(getPlace())
+                    .setLink(url);
             tusovkas.add(t);
         }
         return tusovkas;

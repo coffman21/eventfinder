@@ -1,8 +1,6 @@
 package com.banditos.server.parser.vk;
 
-import com.banditos.server.model.Place;
 import com.banditos.server.model.Tusovka;
-import com.banditos.server.orm.PlaceRepository;
 import com.banditos.server.orm.TusovkaRepository;
 import com.banditos.server.parser.Parser;
 import com.vk.api.sdk.client.TransportClient;
@@ -14,19 +12,17 @@ import com.vk.api.sdk.httpclient.HttpTransportClient;
 import com.vk.api.sdk.objects.groups.GroupFull;
 import com.vk.api.sdk.objects.wall.WallPostFull;
 import com.vk.api.sdk.objects.wall.responses.GetExtendedResponse;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.data.domain.PageRequest;
-
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 public abstract class AbstractVkParser implements Parser {
 
@@ -52,7 +48,7 @@ public abstract class AbstractVkParser implements Parser {
 
     @Override
     public List<Tusovka> parseTusovkas() {
-        GetExtendedResponse response = null;
+        GetExtendedResponse response;
         List<Tusovka> tusovkas = new ArrayList<>();
 
         try {
@@ -66,7 +62,6 @@ public abstract class AbstractVkParser implements Parser {
         int i = 0;
         for (WallPostFull wpf : response.getItems()) {
             GroupFull gf = lgf.get(i);
-            Place place = new Place();
 
             URL url = null;
             try {
@@ -74,13 +69,13 @@ public abstract class AbstractVkParser implements Parser {
             } catch (MalformedURLException e) {
                 LOGGER.error("Error when parsing URL: ", e);
             }
-            tusovkas.add(new Tusovka(
-                    LocalDateTime.from(Instant.ofEpochSecond(wpf.getDate())),
-                    gf.getName(),
-                    wpf.getText(),
-                    place,
-                    url,
-                    null));
+
+            tusovkas.add(new Tusovka()
+                    .setName(gf.getName())
+                    .setBeginDate(LocalDateTime.from(Instant.ofEpochSecond(wpf.getDate())))
+                    .setDescription(wpf.getText())
+                    .setPlace(getPlace())
+                    .setLink(url));
             i++;
         }
         return tusovkas;
@@ -89,6 +84,6 @@ public abstract class AbstractVkParser implements Parser {
     private LocalDateTime getLastTusovka(String place) {
         List<Tusovka> tusovka = tusovkaRepository
                 .findByPlaceOrderByDateDesc(place, new PageRequest(0, 1));
-        return tusovka.get(0).getDate();
+        return tusovka.get(0).getBeginDate();
     }
 }

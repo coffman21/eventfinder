@@ -3,9 +3,6 @@ package com.banditos.server.controller;
 import com.banditos.server.model.Tusovka;
 import com.banditos.server.orm.TusovkaRepository;
 import com.banditos.server.parser.vk.VkParser;
-import com.vk.api.sdk.exceptions.ApiException;
-import com.vk.api.sdk.exceptions.ClientException;
-import java.net.MalformedURLException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,10 +24,9 @@ public class MainController {
         return tusovkaRepository.findAll();
     }
 
-    @GetMapping(path = "runParser")
-    public @ResponseBody Iterable<Tusovka> runParser()
-            throws ApiException, ClientException, MalformedURLException {
-        List<Tusovka> tusovkas = vkParser.getTusovkas();
+    @GetMapping(path = "/runParser")
+    public @ResponseBody Iterable<Tusovka> runParser() {
+        List<Tusovka> tusovkas = vkParser.parseTusovkas();
         return tusovkas;
     }
 
