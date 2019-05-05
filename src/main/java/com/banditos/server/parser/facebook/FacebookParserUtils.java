@@ -55,7 +55,7 @@ class FacebookParserUtils {
             } else {
                 // Friday, May 10, 2019 at 10 PM – 5 AM
                 endDate = parseDate(beginDatePart, endPart);
-                if (endPart.contains(AM)) {
+                if (endDate.isBefore(beginDate)) {
                     endDate = endDate.plus(1, ChronoUnit.DAYS);
                 }
             }
@@ -74,23 +74,10 @@ class FacebookParserUtils {
         LocalDateTime date = null;
         if (datePart.equals(TODAY)) {
             // Today at 8 PM – 11 PM
-
-            if (getTime(timePart).isAfter(LocalTime.now())) {
-                date = LocalDateTime
-                        .now()
-                        .truncatedTo(ChronoUnit.DAYS)
-                        .with(getTime(timePart));
-
-            } else {
-                // now() is later than event date: event already started
-                // Today at 11 PM – 5 AM
-                date = LocalDateTime
-                        .now()
-                        .truncatedTo(ChronoUnit.DAYS)
-                        .minus(1, ChronoUnit.DAYS)
-                        .with(getTime(timePart));
-            }
-
+            date = LocalDateTime
+                    .now()
+                    .truncatedTo(ChronoUnit.DAYS)
+                    .with(getTime(timePart));
         } else if (datePart.equals(TOMORROW)) {
             // Tomorrow at 8 PM – 11 PM
             date = LocalDateTime
@@ -125,8 +112,10 @@ class FacebookParserUtils {
                     } else {
                         date = LocalDateTime
                                 .now()
-                                .with(ChronoField.MONTH_OF_YEAR, parse.get(ChronoField.MONTH_OF_YEAR))
-                                .with(ChronoField.DAY_OF_MONTH, parse.get(ChronoField.DAY_OF_MONTH))
+                                .with(ChronoField.MONTH_OF_YEAR,
+                                        parse.get(ChronoField.MONTH_OF_YEAR))
+                                .with(ChronoField.DAY_OF_MONTH,
+                                        parse.get(ChronoField.DAY_OF_MONTH))
                                 .with(getTime(timePart));
                     }
 
