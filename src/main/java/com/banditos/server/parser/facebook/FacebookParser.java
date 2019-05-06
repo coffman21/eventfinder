@@ -63,7 +63,8 @@ public class FacebookParser implements Parser, DisposableBean {
 
         List<Tusovka> tusovkas = new ArrayList<>();
 
-        if (!isLoggedIn()) {
+        if (isNotLoggedIn()) {
+            LOGGER.info("Not logged in: logging in to Facebook");
             login();
         }
 
@@ -126,7 +127,6 @@ public class FacebookParser implements Parser, DisposableBean {
         String email = env.getProperty("fb.login");
         String pass = env.getProperty("fb.pass");
 
-        LOGGER.trace("Logging in to Facebook");
         driver.get(FB_PAGE_LINK);
         driver.findElement(By.id("m_login_email")).click();
         driver.findElement(By.id("m_login_email"))
@@ -143,15 +143,15 @@ public class FacebookParser implements Parser, DisposableBean {
             LOGGER.trace("Trying to log in, got: {}", driver
                     .getPageSource());
         }
-        if (driver.getTitle().contains(FB_LOG_IN_TITLE)) {
+        if (isNotLoggedIn()) {
             LOGGER.warn("Did not login, current page: {} {}"
                     , driver.getCurrentUrl()
                     , driver.getTitle());
         }
     }
 
-    private boolean isLoggedIn() {
+    private boolean isNotLoggedIn() {
         driver.get(FB_PAGE_LINK);
-        return !driver.getTitle().contains(FB_LOG_IN_TITLE);
+        return driver.getTitle().contains(FB_LOG_IN_TITLE);
     }
 }

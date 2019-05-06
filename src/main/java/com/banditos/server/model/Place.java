@@ -32,6 +32,8 @@ public class Place {
 
     private String facebookDomain;
 
+    private String vkDomain;
+
     public Place() {
     }
 
@@ -96,6 +98,15 @@ public class Place {
         return this;
     }
 
+    public String getVkDomain() {
+        return vkDomain;
+    }
+
+    public Place setVkDomain(String vkDomain) {
+        this.vkDomain = vkDomain;
+        return this;
+    }
+
     @Override
     public String toString() {
         return "Place{" +
@@ -107,6 +118,7 @@ public class Place {
                 ", latitude=" + latitude +
                 ", longitude=" + longitude +
                 ", facebookDomain='" + facebookDomain + '\'' +
+                ", vkDomain='" + vkDomain + '\'' +
                 '}';
     }
 }
