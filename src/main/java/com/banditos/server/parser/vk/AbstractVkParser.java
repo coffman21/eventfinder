@@ -1,5 +1,6 @@
 package com.banditos.server.parser.vk;
 
+import com.banditos.server.model.Place;
 import com.banditos.server.model.Tusovka;
 import com.banditos.server.orm.TusovkaRepository;
 import com.banditos.server.parser.Parser;
@@ -31,8 +32,6 @@ public abstract class AbstractVkParser implements Parser {
     private final TusovkaRepository tusovkaRepository;
     private final VkApiClient vk;
     private final ServiceActor actor;
-    String domain;
-
 
     @Autowired
     AbstractVkParser(Environment env, TusovkaRepository tusovkaRepository) {
@@ -47,13 +46,13 @@ public abstract class AbstractVkParser implements Parser {
     }
 
     @Override
-    public List<Tusovka> parseTusovkas() {
+    public List<Tusovka> parseTusovkas(Place place) {
         GetExtendedResponse response;
         List<Tusovka> tusovkas = new ArrayList<>();
 
         try {
             response = vk.wall().getExtended(actor)
-                    .domain(domain).count(5).execute();
+                    .domain("pwrhs").count(5).execute();
         } catch (ApiException | ClientException e) {
             LOGGER.error("Error when getting wall posts from vk: ", e);
             return tusovkas;
@@ -74,7 +73,7 @@ public abstract class AbstractVkParser implements Parser {
                     .setName(gf.getName())
                     .setBeginDate(LocalDateTime.from(Instant.ofEpochSecond(wpf.getDate())))
                     .setDescription(wpf.getText())
-                    .setPlace(getPlace())
+                    .setPlace(place)
                     .setLink(url));
             i++;
         }

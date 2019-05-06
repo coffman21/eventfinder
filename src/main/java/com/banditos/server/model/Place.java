@@ -30,17 +30,9 @@ public class Place {
 
     private Float longitude;
 
+    private String facebookDomain;
+
     public Place() {
-    }
-
-
-    public Place(String name, String address, String description, List<Tusovka> tusovkas, Float latitude, Float longitude) {
-        this.name = name;
-        this.address = address;
-        this.description = description;
-        this.tusovkas = tusovkas;
-        this.latitude = latitude;
-        this.longitude = longitude;
     }
 
     public Long getId() {
@@ -95,8 +87,26 @@ public class Place {
         this.longitude = longitude;
     }
 
+    public String getFacebookDomain() {
+        return facebookDomain;
+    }
+
+    public Place setFacebookDomain(String facebookDomain) {
+        this.facebookDomain = facebookDomain;
+        return this;
+    }
+
     @Override
     public String toString() {
-        return name;
+        return "Place{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", address='" + address + '\'' +
+                ", description='" + description + '\'' +
+                ", tusovkas=" + tusovkas +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
+                ", facebookDomain='" + facebookDomain + '\'' +
+                '}';
     }
 }

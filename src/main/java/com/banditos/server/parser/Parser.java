@@ -5,8 +5,5 @@ import com.banditos.server.model.Tusovka;
 import java.util.List;
 
 public interface Parser {
-    List<Tusovka> parseTusovkas();
-
-    void setDomain(String domain);
-    Place getPlace();
+    List<Tusovka> parseTusovkas(Place place);
 }

@@ -16,15 +16,4 @@ public class VkParser extends AbstractVkParser {
     VkParser(Environment env, TusovkaRepository tusovkaRepository) {
         super(env, tusovkaRepository);
     }
-
-
-    @Override
-    public void setDomain(String domain) {
-        super.domain = "pwrhs";
-    }
-
-    @Override
-    public Place getPlace() {
-        return null;
-    }
 }
