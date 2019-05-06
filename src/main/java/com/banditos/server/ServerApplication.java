@@ -1,5 +1,6 @@
 package com.banditos.server;
 
+import com.banditos.server.bot.config.BotConfigurationProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -10,7 +11,7 @@ import org.telegram.telegrambots.ApiContextInitializer;
 @EnableAsync
 @EnableScheduling
 @SpringBootApplication
-// todo @EnableConfigurationProperties
+@EnableConfigurationProperties({BotConfigurationProperties.class})
 public class ServerApplication {
 
 	public static void main(String[] args) {

@@ -1,5 +1,6 @@
 package com.banditos.server.bot;
 
+import com.banditos.server.bot.config.BotConfigurationProperties;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,8 +20,10 @@ public class Bot extends AbilityBot {
 
     private BotMessageCreator botMessageCreator;
 
-    public Bot(Environment env, BotMessageCreator botMessageCreator, DefaultBotOptions botOptions) {
-        super(env.getProperty("telegram.token"), env.getProperty("telegram.botname"), botOptions);
+    public Bot(BotConfigurationProperties properties,
+            BotMessageCreator botMessageCreator,
+            DefaultBotOptions botOptions) {
+        super(properties.getToken(), properties.getBotname(), botOptions);
         this.botMessageCreator = botMessageCreator;
     }
 

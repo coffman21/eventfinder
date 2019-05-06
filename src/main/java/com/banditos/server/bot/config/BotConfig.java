@@ -1,5 +1,7 @@
-package com.banditos.server.bot;
+package com.banditos.server.bot.config;
 
+import com.banditos.server.bot.Bot;
+import com.banditos.server.bot.BotMessageCreator;
 import com.banditos.server.orm.TusovkaRepository;
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
@@ -9,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
 import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.meta.ApiContext;
@@ -23,8 +24,8 @@ public class BotConfig {
             .getLogger(BotConfig.class);
 
     /**
-     * Initializing ApiContextInitializer.
-     * Used for creating BotSession, which used when Bot inits.
+     * Initializing ApiContextInitializer. Used for creating BotSession, which
+     * used when Bot inits.
      */
     @PostConstruct
     public void init() {
@@ -33,10 +34,11 @@ public class BotConfig {
 
     @Bean
     @Autowired
-    public Bot bot(Environment env, BotMessageCreator botMessageCreator,
+    public Bot bot(BotConfigurationProperties properties,
+            BotMessageCreator botMessageCreator,
             DefaultBotOptions botOptions) {
-        String proxyUser = env.getProperty("telegram.proxy.username");
-        String proxyPass = env.getProperty("telegram.proxy.password");
+        String proxyUser = properties.proxy.getUsername();
+        String proxyPass = properties.proxy.getPassword();
         Authenticator.setDefault(new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
@@ -48,7 +50,7 @@ public class BotConfig {
         // Create the TelegramBotsApi object to register your bots
         TelegramBotsApi botsApi = new TelegramBotsApi();
         // Register your newly created AbilityBot
-        Bot bot = new Bot(env, botMessageCreator, botOptions);
+        Bot bot = new Bot(properties, botMessageCreator, botOptions);
 
         try {
             botsApi.registerBot(bot);
@@ -68,15 +70,16 @@ public class BotConfig {
 
     /**
      * Set up Http proxy
-     * @param env for properties
+     *
      * @return bot options for Bot constructor
      */
     @Bean
-    public DefaultBotOptions defaultBotOptions(Environment env) {
+    @Autowired
+    public DefaultBotOptions defaultBotOptions(BotConfigurationProperties properties) {
         DefaultBotOptions botOptions = ApiContext
                 .getInstance(DefaultBotOptions.class);
-        botOptions.setProxyHost(env.getProperty("telegram.proxy.host"));
-        botOptions.setProxyPort(env.getProperty("telegram.proxy.port", Integer.class));
+        botOptions.setProxyHost(properties.proxy.getHost());
+        botOptions.setProxyPort(properties.proxy.getPort());
         botOptions.setProxyType(DefaultBotOptions.ProxyType.SOCKS5);
         return botOptions;
     }
