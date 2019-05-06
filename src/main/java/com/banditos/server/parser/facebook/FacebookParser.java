@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.slf4j.Logger;
@@ -42,8 +43,6 @@ public class FacebookParser implements Parser, DisposableBean {
     private final WebDriver driver;
     private final Environment env;
 
-    private boolean isLoggedIn = false;
-
     @Autowired
     public FacebookParser(Environment env) {
         this.env = env;
@@ -64,58 +63,61 @@ public class FacebookParser implements Parser, DisposableBean {
 
         List<Tusovka> tusovkas = new ArrayList<>();
 
-        if (!isLoggedIn) {
-            // todo cookie expiration
+        if (!isLoggedIn()) {
             login();
         }
 
-        String fbGroupUrl = FB_PAGE_LINK + domain + "/events";
-        driver.get(fbGroupUrl);
-        if (LOGGER.isTraceEnabled()) {
-            LOGGER.trace("Opening url: {} Got page: {}", fbGroupUrl,
-                    driver.getPageSource());
-        }
-
-        List<String> eventHrefs = driver.findElements(By.xpath(
-                XPATH_FOR_VIEW_EVENTS_BUTTON))
-                .stream()
-                .map(e -> e.getAttribute("href"))
-                .collect(Collectors.toList());
-
-        for (int i = 0; i < 5; i++) {
-            String eventUrl = eventHrefs.get(i);
-            driver.get(eventUrl);
-            WebElement element;
-
-            element = driver.findElement(By
-                    .xpath(XPATH_FOR_EVENT_TITLE));
-            String eventTitle = element.getText();
-
-            element = driver.findElement(By
-                    .xpath(XPATH_FOR_EVENT_DATE));
-            String eventDate = element.getText();
-
-            element = driver.findElement(By
-                    .xpath(XPATH_FOR_EVENT_DESCRIPTION));
-            String eventDescr = element.getText();
-            LOGGER.trace("page: {}, title: {}, time: {}, description: {}",
-                    eventUrl, eventTitle, eventDate, eventDescr);
-
-            URL url;
-            try {
-                url = new URL(eventUrl);
-            } catch (MalformedURLException e) {
-                LOGGER.error("Event URL: {} is malformed", eventUrl);
-                url = null;
+        try {
+            String fbGroupUrl = FB_PAGE_LINK + domain + "/events";
+            driver.get(fbGroupUrl);
+            if (LOGGER.isTraceEnabled()) {
+                LOGGER.trace("Opening url: {} Got page: {}", fbGroupUrl,
+                        driver.getPageSource());
             }
-            Tusovka t = new Tusovka()
-                    .setName(eventTitle)
-                    .setDateStr(eventDate)
-                    .setDate(FacebookParserUtils.parseEventDate(eventDate))
-                    .setDescription(eventDescr)
-                    .setPlace(place)
-                    .setLink(url);
-            tusovkas.add(t);
+
+            List<String> eventHrefs = driver.findElements(By.xpath(
+                    XPATH_FOR_VIEW_EVENTS_BUTTON))
+                    .stream()
+                    .map(e -> e.getAttribute("href"))
+                    .collect(Collectors.toList());
+
+            for (int i = 0; i < 5; i++) {
+                String eventUrl = eventHrefs.get(i);
+                driver.get(eventUrl);
+                WebElement element;
+
+                element = driver.findElement(By
+                        .xpath(XPATH_FOR_EVENT_TITLE));
+                String eventTitle = element.getText();
+
+                element = driver.findElement(By
+                        .xpath(XPATH_FOR_EVENT_DATE));
+                String eventDate = element.getText();
+
+                element = driver.findElement(By
+                        .xpath(XPATH_FOR_EVENT_DESCRIPTION));
+                String eventDescr = element.getText();
+                LOGGER.trace("page: {}, title: {}, time: {}, description: {}",
+                        eventUrl, eventTitle, eventDate, eventDescr);
+
+                URL url;
+                try {
+                    url = new URL(eventUrl);
+                } catch (MalformedURLException e) {
+                    LOGGER.error("Event URL: {} is malformed", eventUrl);
+                    url = null;
+                }
+                Tusovka t = new Tusovka()
+                        .setName(eventTitle)
+                        .setDateStr(eventDate)
+                        .setDate(FacebookParserUtils.parseEventDate(eventDate))
+                        .setDescription(eventDescr)
+                        .setPlace(place)
+                        .setLink(url);
+                tusovkas.add(t);
+            }
+        } catch (WebDriverException e) {
+            LOGGER.error("Error when parsing page: {}", driver.getCurrentUrl(), e);
         }
         return tusovkas;
     }
@@ -141,7 +143,11 @@ public class FacebookParser implements Parser, DisposableBean {
             LOGGER.trace("Trying to log in, got: {}", driver
                     .getPageSource());
         }
-        isLoggedIn = true;
+        if (driver.getTitle().contains(FB_LOG_IN_TITLE)) {
+            LOGGER.warn("Did not login, current page: {} {}"
+                    , driver.getCurrentUrl()
+                    , driver.getTitle());
+        }
     }
 
     private boolean isLoggedIn() {
