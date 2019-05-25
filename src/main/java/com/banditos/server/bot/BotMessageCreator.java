@@ -4,8 +4,6 @@ import com.banditos.server.model.Tusovka;
 import com.banditos.server.orm.TusovkaRepository;
 import java.time.Duration;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -13,12 +11,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 
-@Component
 public class BotMessageCreator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BotMessageCreator.class);
@@ -34,7 +30,7 @@ public class BotMessageCreator {
         Iterable<Tusovka> tusovkas = tusovkaRepository.findAllByDateGreaterThanEqual(
                 Date.from(Instant.now().minus(Duration.ofDays(1))), new PageRequest(0, 10));
         SendMessage response = new SendMessage();
-            response.setChatId(id);
+        response.setChatId(id);
 
         StringBuilder sb = new StringBuilder();
         for (Tusovka t : tusovkas) {
