@@ -54,20 +54,32 @@
     </dependency>
 
     <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-devtools</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.foreach.across</groupId>
+      <artifactId>across-web</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.foreach.across.modules</groupId>
+      <artifactId>entity-module</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.foreach.across.modules</groupId>
+      <artifactId>admin-web-module</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.foreach.across.modules</groupId>
+      <artifactId>across-hibernate-module</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>com.vk.api</groupId>
       <artifactId>sdk</artifactId>
       <version>0.5.11</version>
     </dependency>
-    <!--<dependency>-->
-    <!--<groupId>com.github.xabgesagtx</groupId>-->
-    <!--<artifactId>telegram-spring-boot-starter</artifactId>-->
-    <!--<version>0.13</version>-->
-    <!--</dependency>-->
-    <!--<dependency>-->
-    <!--<groupId>org.telegram</groupId>-->
-    <!--<artifactId>telegrambots</artifactId>-->
-    <!--<version>4.1.2</version>-->
-    <!--</dependency>-->
     <dependency>
       <groupId>org.telegram</groupId>
       <artifactId>telegrambots-abilities</artifactId>

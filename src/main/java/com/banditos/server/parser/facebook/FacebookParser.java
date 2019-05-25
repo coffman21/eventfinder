@@ -23,7 +23,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-// todo scope
 @Component
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class FacebookParser implements Parser, DisposableBean {
@@ -36,6 +35,7 @@ public class FacebookParser implements Parser, DisposableBean {
     private static final String XPATH_FOR_EVENT_TITLE = "//h3";
     private static final String XPATH_FOR_EVENT_DATE = "//div[@id='event_summary']/div/div/table/tbody/tr/td[2]/dt/div";
     private static final String XPATH_FOR_EVENT_DESCRIPTION = "//div[@id='event_tabs']/div[2]/div[2]/div[2]";
+    private static final String XPATH_FOR_ADDRESS = "/html/body/div/div/div[2]/div/div[1]/div[1]/div[2]/div/div[3]/div/div[1]/a/table/tbody/tr/td[2]/div/div[1]";
 
     private static final String XPATH_FOR_SEE_MORE_BTN = "//span[text()[contains(.,'See More Events')]]";
     private static final String XPATH_FOR_SEE_MORE_BTN_2 = "//div[@id='m_more_friends_who_like_this']/a/span";
@@ -64,7 +64,6 @@ public class FacebookParser implements Parser, DisposableBean {
         List<Tusovka> tusovkas = new ArrayList<>();
 
         if (isNotLoggedIn()) {
-            LOGGER.info("Not logged in: logging in to Facebook");
             login();
         }
 
@@ -123,6 +122,30 @@ public class FacebookParser implements Parser, DisposableBean {
         return tusovkas;
     }
 
+    @Override
+    public Place resolvePlace(String placeDomain) {
+        if (isNotLoggedIn()) login();
+
+        try {
+            driver.get(FB_PAGE_LINK + placeDomain);
+            String placeName = driver.getTitle();
+
+            WebElement addrElement = driver.findElement(By
+                    .xpath(XPATH_FOR_ADDRESS));
+            String address = addrElement.getText();
+
+            return new Place()
+                    .setName(placeName)
+                    .setFacebookDomain(placeDomain)
+                    .setAddress(address)
+                    .setTusovkas(new ArrayList<>());
+        } catch (WebDriverException e) {
+            LOGGER.error("Error when parsing page: {}", driver.getCurrentUrl(), e);
+        }
+        return null;
+
+    }
+
     private void login() {
         String email = env.getProperty("fb.login");
         String pass = env.getProperty("fb.pass");
@@ -151,6 +174,7 @@ public class FacebookParser implements Parser, DisposableBean {
     }
 
     private boolean isNotLoggedIn() {
+        LOGGER.info("Not logged in: logging in to Facebook");
         driver.get(FB_PAGE_LINK);
         return driver.getTitle().contains(FB_LOG_IN_TITLE);
     }

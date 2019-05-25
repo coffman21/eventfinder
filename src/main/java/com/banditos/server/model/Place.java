@@ -37,56 +37,58 @@ public class Place {
     public Place() {
     }
 
-    public Long getId() {
-        return id;
-    }
-
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public Place setName(String name) {
         this.name = name;
+        return this;
     }
 
     public String getAddress() {
         return address;
     }
 
-    public void setAddress(String address) {
+    public Place setAddress(String address) {
         this.address = address;
+        return this;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
+    public Place setDescription(String description) {
         this.description = description;
+        return this;
     }
 
     public List<Tusovka> getTusovkas() {
         return tusovkas;
     }
 
-    public void setTusovkas(List<Tusovka> tusovkas) {
+    public Place setTusovkas(List<Tusovka> tusovkas) {
         this.tusovkas = tusovkas;
+        return this;
     }
 
     public Float getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(Float latitude) {
+    public Place setLatitude(Float latitude) {
         this.latitude = latitude;
+        return this;
     }
 
     public Float getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(Float longitude) {
+    public Place setLongitude(Float longitude) {
         this.longitude = longitude;
+        return this;
     }
 
     public String getFacebookDomain() {

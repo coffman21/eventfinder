@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface Parser {
     List<Tusovka> parseTusovkas(Place place);
+
+    Place resolvePlace(String placeDomain);
 }
