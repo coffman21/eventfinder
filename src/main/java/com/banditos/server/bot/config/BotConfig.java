@@ -37,8 +37,8 @@ public class BotConfig {
     public Bot bot(BotConfigurationProperties properties,
             BotMessageCreator botMessageCreator,
             DefaultBotOptions botOptions) {
-        String proxyUser = properties.proxy.getUsername();
-        String proxyPass = properties.proxy.getPassword();
+        String proxyUser = properties.getProxy().getUsername();
+        String proxyPass = properties.getProxy().getPassword();
         Authenticator.setDefault(new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
@@ -78,8 +78,8 @@ public class BotConfig {
     public DefaultBotOptions defaultBotOptions(BotConfigurationProperties properties) {
         DefaultBotOptions botOptions = ApiContext
                 .getInstance(DefaultBotOptions.class);
-        botOptions.setProxyHost(properties.proxy.getHost());
-        botOptions.setProxyPort(properties.proxy.getPort());
+        botOptions.setProxyHost(properties.getProxy().getHost());
+        botOptions.setProxyPort(properties.getProxy().getPort());
         botOptions.setProxyType(DefaultBotOptions.ProxyType.SOCKS5);
         return botOptions;
     }

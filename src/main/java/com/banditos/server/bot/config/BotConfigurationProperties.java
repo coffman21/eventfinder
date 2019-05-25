@@ -1,11 +1,13 @@
 package com.banditos.server.bot.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 @ConfigurationProperties(prefix= "telegram")
 public class BotConfigurationProperties {
     private String token;
     private String botname;
+    private Proxy proxy;
 
     public String getToken() {
         return token;
@@ -15,8 +17,6 @@ public class BotConfigurationProperties {
         return botname;
     }
 
-    public final Proxy proxy = new Proxy();
-
     public BotConfigurationProperties setBotname(String botname) {
         this.botname = botname;
         return this;
@@ -24,6 +24,15 @@ public class BotConfigurationProperties {
 
     public BotConfigurationProperties setToken(String token) {
         this.token = token;
+        return this;
+    }
+
+    public Proxy getProxy() {
+        return proxy;
+    }
+
+    public BotConfigurationProperties setProxy(Proxy proxy) {
+        this.proxy = proxy;
         return this;
     }
 
