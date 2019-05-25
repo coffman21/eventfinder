@@ -28,7 +28,7 @@ public class BotMessageCreator {
 
     public SendMessage createTusovkasMessage(Long id) {
         Iterable<Tusovka> tusovkas = tusovkaRepository.findAllByDateGreaterThanEqual(
-                Date.from(Instant.now().minus(Duration.ofDays(1))), new PageRequest(0, 10));
+                Date.from(Instant.now().minus(Duration.ofDays(1))), PageRequest.of(0, 10));
         SendMessage response = new SendMessage();
         response.setChatId(id);
 

@@ -82,7 +82,7 @@ public abstract class AbstractVkParser implements Parser {
 
     private LocalDateTime getLastTusovka(String place) {
         List<Tusovka> tusovka = tusovkaRepository
-                .findByPlaceOrderByDateDesc(place, new PageRequest(0, 1));
+                .findByPlaceOrderByDateDesc(place, PageRequest.of(0, 1));
         return tusovka.get(0).getBeginDate();
     }
 }

@@ -16,4 +16,9 @@ public class VkParser extends AbstractVkParser {
     VkParser(Environment env, TusovkaRepository tusovkaRepository) {
         super(env, tusovkaRepository);
     }
+
+    @Override
+    public Place resolvePlace(String placeDomain) {
+        throw new UnsupportedOperationException("not implemented");
+    }
 }
