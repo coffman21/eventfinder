@@ -7,6 +7,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
@@ -30,7 +31,7 @@ public class FacebookParser implements Parser, DisposableBean {
     private static final Logger LOGGER = LoggerFactory
             .getLogger(FacebookParser.class);
     private static final String FB_PAGE_LINK = "https://mobile.facebook.com/";
-    private static final String FB_LOG_IN_TITLE = "Log in to Facebook";
+    private static final String FB_LOG_IN_TITLE = "LOG IN";
     private static final String XPATH_FOR_VIEW_EVENTS_BUTTON = "(//a[contains(text(),'View Event Details')])";
     private static final String XPATH_FOR_EVENT_TITLE = "//h3";
     private static final String XPATH_FOR_EVENT_DATE = "//div[@id='event_summary']/div/div/table/tbody/tr/td[2]/dt/div";
@@ -40,13 +41,16 @@ public class FacebookParser implements Parser, DisposableBean {
     private static final String XPATH_FOR_SEE_MORE_BTN = "//span[text()[contains(.,'See More Events')]]";
     private static final String XPATH_FOR_SEE_MORE_BTN_2 = "//div[@id='m_more_friends_who_like_this']/a/span";
 
+    private static final int WAIT_TIMEOUT = 1666;
+
     private final WebDriver driver;
     private final Environment env;
 
     @Autowired
     public FacebookParser(Environment env) {
         this.env = env;
-        this.driver = new HtmlUnitDriver(true);
+        this.driver = new HtmlUnitDriver(false);
+        driver.manage().timeouts().implicitlyWait(WAIT_TIMEOUT, TimeUnit.MILLISECONDS);
     }
 
     @Override
@@ -55,7 +59,7 @@ public class FacebookParser implements Parser, DisposableBean {
     }
 
     @Override
-    public List<Tusovka> parseTusovkas(Place place) {
+    public synchronized List<Tusovka> parseTusovkas(Place place) {
         String domain = place.getFacebookDomain();
         if (domain == null) {
             throw new IllegalStateException("domain field not set");
@@ -123,11 +127,16 @@ public class FacebookParser implements Parser, DisposableBean {
     }
 
     @Override
-    public Place resolvePlace(String placeDomain) {
+    public synchronized Place resolvePlace(String placeDomain) {
         if (isNotLoggedIn()) login();
 
         try {
-            driver.get(FB_PAGE_LINK + placeDomain);
+            String link = FB_PAGE_LINK + placeDomain;
+            driver.get(link);
+            if (LOGGER.isTraceEnabled()) {
+                LOGGER.trace("Opening url: {} Got page: {}", link,
+                        driver.getPageSource());
+            }
             String placeName = driver.getTitle();
 
             WebElement addrElement = driver.findElement(By
@@ -146,7 +155,7 @@ public class FacebookParser implements Parser, DisposableBean {
 
     }
 
-    private void login() {
+    private synchronized void login() {
         String email = env.getProperty("fb.login");
         String pass = env.getProperty("fb.pass");
 
@@ -174,8 +183,12 @@ public class FacebookParser implements Parser, DisposableBean {
     }
 
     private boolean isNotLoggedIn() {
-        LOGGER.info("Not logged in: logging in to Facebook");
         driver.get(FB_PAGE_LINK);
-        return driver.getTitle().contains(FB_LOG_IN_TITLE);
+        LOGGER.trace(driver.getPageSource());
+        boolean contains = driver.getTitle().toUpperCase().contains(FB_LOG_IN_TITLE);
+        if (contains) {
+            LOGGER.info("Not logged in: logging in to Facebook");
+        }
+        return contains;
     }
 }
